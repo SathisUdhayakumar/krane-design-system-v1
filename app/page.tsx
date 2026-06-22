@@ -8,6 +8,7 @@ import {
   ClipboardCheck,
   ClipboardList,
   Database,
+  FileCheck2,
   Info,
   Layers,
   Layers3,
@@ -206,6 +207,12 @@ const DEMOS = [
     title: "Procurement Log",
     description: "A real composed page — Shell, DataTable Advanced, and Form, built from only what already exists.",
     icon: ClipboardList,
+  },
+  {
+    href: "/demo/submittal-log",
+    title: "Submittal Log",
+    description: "The same process as Procurement Log, applied to submittal review — Shell, DataTable Advanced, Form.",
+    icon: FileCheck2,
   },
   {
     href: "/demo/button",
