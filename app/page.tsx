@@ -2,6 +2,7 @@ import Link from "next/link"
 import {
   AlignLeft,
   Bell,
+  Boxes,
   CheckSquare,
   CircleDot,
   CircleUserRound,
@@ -213,6 +214,12 @@ const DEMOS = [
     title: "Submittal Log",
     description: "The same process as Procurement Log, applied to submittal review — Shell, DataTable Advanced, Form.",
     icon: FileCheck2,
+  },
+  {
+    href: "/demo/materials-inventory",
+    title: "Materials Inventory",
+    description: "The same process a fourth time, for stock tracking — derived risk levels, and new evidence for two previously-open gaps.",
+    icon: Boxes,
   },
   {
     href: "/demo/button",
