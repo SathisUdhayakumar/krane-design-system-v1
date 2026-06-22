@@ -170,6 +170,22 @@ export interface DataTableProps<TData> {
 const SELECT_COLUMN_ID = "__select__"
 const ROW_ACTIONS_COLUMN_ID = "__row_actions__"
 
+// Explicit sizes for the two internally-generated columns — without these,
+// TanStack Table's getStart("left")/getAfter("right") (consumed by
+// getPinnedStyle below) fall back to the library's own 150px default column
+// size, which only ever surfaces when a second column shares the same
+// pinned side as one of these (e.g. enableRowSelection combined with
+// positionActionsColumn="first"). Measured empirically via Playwright across
+// every existing usage (both density modes, several real pages) at
+// 28–32.6px (select) and 52–60.8px (actions) in compact density, 42.1px and
+// 79.1px in comfortable — these constants are deliberately set above the
+// largest observed value, not tuned to a tight fit: getSize() only feeds the
+// *next* pinned column's offset math here, never an actual rendered width,
+// so overshooting just leaves a few harmless px of extra gap, while
+// undershooting reproduces the original overlap at a smaller scale.
+const SELECT_COLUMN_SIZE = 48
+const ACTIONS_COLUMN_SIZE = 88
+
 function DataTable<TData>({
   columns,
   data,
@@ -272,6 +288,7 @@ function DataTable<TData>({
     if (enableRowSelection) {
       const selectColumn: ColumnDef<TData> = {
         id: SELECT_COLUMN_ID,
+        size: SELECT_COLUMN_SIZE,
         enableHiding: false,
         enableSorting: false,
         header: ({ table }) => (
@@ -301,6 +318,7 @@ function DataTable<TData>({
     if (rowActions) {
       const actionsColumn: ColumnDef<TData> = {
         id: ROW_ACTIONS_COLUMN_ID,
+        size: ACTIONS_COLUMN_SIZE,
         enableHiding: false,
         enableSorting: false,
         header: () => <span className="sr-only">Actions</span>,
