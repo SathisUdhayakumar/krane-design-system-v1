@@ -6,6 +6,7 @@ import {
   CircleDot,
   CircleUserRound,
   ClipboardCheck,
+  ClipboardList,
   Database,
   Info,
   Layers,
@@ -199,6 +200,12 @@ const DEMOS = [
     title: "App Shell",
     description: "The full Krane navigation shell — sidebar, header, switchers, and collapse.",
     icon: LayoutDashboard,
+  },
+  {
+    href: "/demo/procurement-log",
+    title: "Procurement Log",
+    description: "A real composed page — Shell, DataTable Advanced, and Form, built from only what already exists.",
+    icon: ClipboardList,
   },
   {
     href: "/demo/button",
