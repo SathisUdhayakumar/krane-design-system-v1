@@ -31,6 +31,7 @@ import {
   Tag,
   TextCursorInput,
   ToggleRight,
+  Truck,
   Type,
   User,
   Zap,
@@ -214,6 +215,12 @@ const DEMOS = [
     title: "Submittal Log",
     description: "The same process as Procurement Log, applied to submittal review — Shell, DataTable Advanced, Form.",
     icon: FileCheck2,
+  },
+  {
+    href: "/demo/delivery-schedule",
+    title: "Delivery Schedule",
+    description: "The same process again, for delivery tracking — and a documented case where a table couldn't be everything a \"schedule\" implies.",
+    icon: Truck,
   },
   {
     href: "/demo/materials-inventory",
