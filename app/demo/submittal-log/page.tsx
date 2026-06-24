@@ -585,6 +585,11 @@ export default function SubmittalLogPage() {
         label: "Send back",
         icon: X,
         variant: "destructive",
+        confirm: {
+          title: (count) => `Send back ${count} submittal${count === 1 ? "" : "s"}?`,
+          description: (count) =>
+            `${count} submittal${count === 1 ? "" : "s"} will be returned to the vendor for revision.`,
+        },
         onAction: async (rows) => {
           await new Promise((resolve) => setTimeout(resolve, 600))
           toast({

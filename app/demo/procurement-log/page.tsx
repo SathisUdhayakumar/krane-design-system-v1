@@ -629,6 +629,11 @@ export default function ProcurementLogPage() {
         label: "Reject",
         icon: X,
         variant: "destructive",
+        confirm: {
+          title: (count) => `Reject ${count} purchase order${count === 1 ? "" : "s"}?`,
+          description: (count) =>
+            `${count} purchase order${count === 1 ? "" : "s"} will be marked as rejected.`,
+        },
         onAction: async (rows) => {
           await new Promise((resolve) => setTimeout(resolve, 600))
           toast({

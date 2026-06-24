@@ -773,6 +773,11 @@ export default function MaterialsInventoryPage() {
         label: "Discontinue",
         icon: X,
         variant: "destructive",
+        confirm: {
+          title: (count) => `Discontinue ${count} material${count === 1 ? "" : "s"}?`,
+          description: (count) =>
+            `${count} material${count === 1 ? "" : "s"} will be marked as discontinued and removed from active ordering.`,
+        },
         onAction: async (rows) => {
           await new Promise((resolve) => setTimeout(resolve, 600))
           toast({

@@ -74,6 +74,11 @@ const poBulkActions: DataTableBulkAction<PurchaseOrder>[] = [
     label: "Reject",
     icon: X,
     variant: "destructive",
+    confirm: {
+      title: (count) => `Reject ${count} purchase order${count === 1 ? "" : "s"}?`,
+      description: (count) =>
+        `${count} purchase order${count === 1 ? "" : "s"} will be marked as rejected.`,
+    },
     onAction: (rows) => {
       toast({
         variant: "destructive",
@@ -123,6 +128,11 @@ const vendorBulkActions: DataTableBulkAction<Vendor>[] = [
   {
     label: "Deactivate",
     variant: "destructive",
+    confirm: {
+      title: (count) => `Deactivate ${count} vendor${count === 1 ? "" : "s"}?`,
+      description: (count) =>
+        `${count} vendor${count === 1 ? "" : "s"} will be removed from active use until reactivated.`,
+    },
     onAction: (rows) => {
       toast({
         variant: "warning",

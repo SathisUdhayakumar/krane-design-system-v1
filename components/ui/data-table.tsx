@@ -33,6 +33,14 @@ import {
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
@@ -90,6 +98,22 @@ export interface DataTableBulkAction<TData> {
   icon?: React.ComponentType<{ className?: string }>
   variant?: "default" | "destructive"
   onAction: (rows: TData[]) => void | Promise<void>
+  /** When set, clicking this action opens a confirmation dialog (built from
+   *  Dialog) before onAction runs. Omitted entirely preserves the existing
+   *  fire-immediately behavior.
+   *
+   *  Only honored by DataTableBulkActions (the selection toolbar). rowActions
+   *  reuses this same interface by design (see below) but DataTableRowActionsMenu
+   *  does not check this field — a row action that sets `confirm` will fire
+   *  immediately, unchanged. Scoped this way because the need confirmed so far
+   *  is specifically for bulk actions; wiring row actions is a natural,
+   *  low-cost follow-up if a concrete need for it ever shows up. */
+  confirm?: {
+    title: (count: number) => string
+    description?: (count: number) => string
+    confirmLabel?: string
+    cancelLabel?: string
+  }
 }
 
 // The serialization contract for future Saved Views support
@@ -809,6 +833,9 @@ function DataTableBulkActions<TData>({
   onClearSelection: () => void
 }) {
   const [pendingLabel, setPendingLabel] = React.useState<string | null>(null)
+  const [confirmingAction, setConfirmingAction] = React.useState<DataTableBulkAction<TData> | null>(
+    null
+  )
 
   async function handleAction(action: DataTableBulkAction<TData>) {
     setPendingLabel(action.label)
@@ -816,6 +843,14 @@ function DataTableBulkActions<TData>({
       await action.onAction(selectedRows)
     } finally {
       setPendingLabel(null)
+    }
+  }
+
+  function handleClick(action: DataTableBulkAction<TData>) {
+    if (action.confirm) {
+      setConfirmingAction(action)
+    } else {
+      handleAction(action)
     }
   }
 
@@ -834,7 +869,7 @@ function DataTableBulkActions<TData>({
             key={action.label}
             size="sm"
             variant={action.variant === "destructive" ? "destructive" : "outline"}
-            onClick={() => handleAction(action)}
+            onClick={() => handleClick(action)}
             disabled={pendingLabel !== null}
           >
             {pendingLabel === action.label ? (
@@ -849,6 +884,45 @@ function DataTableBulkActions<TData>({
           Clear
         </Button>
       </div>
+      <Dialog
+        open={confirmingAction !== null}
+        onOpenChange={(open) => !open && setConfirmingAction(null)}
+      >
+        <DialogContent>
+          {confirmingAction?.confirm && (
+            <>
+              <DialogHeader>
+                <DialogTitle>{confirmingAction.confirm.title(selectedRows.length)}</DialogTitle>
+                {confirmingAction.confirm.description && (
+                  <DialogDescription>
+                    {confirmingAction.confirm.description(selectedRows.length)}
+                  </DialogDescription>
+                )}
+              </DialogHeader>
+              <DialogFooter>
+                <Button
+                  variant="outline"
+                  onClick={() => setConfirmingAction(null)}
+                  disabled={pendingLabel !== null}
+                >
+                  {confirmingAction.confirm.cancelLabel ?? "Cancel"}
+                </Button>
+                <Button
+                  variant={confirmingAction.variant === "destructive" ? "destructive" : "default"}
+                  onClick={async () => {
+                    await handleAction(confirmingAction)
+                    setConfirmingAction(null)
+                  }}
+                  disabled={pendingLabel !== null}
+                >
+                  {pendingLabel === confirmingAction.label && <Loader2 className="animate-spin" />}
+                  {confirmingAction.confirm.confirmLabel ?? confirmingAction.label}
+                </Button>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
